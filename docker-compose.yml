@@ -1,0 +1,56 @@
+version: "3"
+services:
+  postfix:
+    build:
+      context: postfix/.
+      args:
+        MAIL_DOMAIN: ${MAIL_DOMAIN}
+    volumes:
+      - mailadm-db:/var/lib/mailadm/
+    ports:
+      - "587:587"
+    networks:
+      - mail
+  dovecot:
+    volumes:
+      - mailadm-db:/var/lib/mailadm/
+    build:
+      context: dovecot/.
+      args:
+        VMAIL_UID: ${VMAIL_UID}
+        VMAIL_GID: ${VMAIL_GID}
+    ports:
+      - "143:143"
+    networks:
+      - mail
+  mailadm:
+    volumes:
+      - mailadm-db:/var/lib/mailadm/
+    build:
+      context: mailadm/.
+      dockerfile: Dockerfile
+      args:
+        VMAIL_UID: ${VMAIL_UID}
+        VMAIL_GID: ${VMAIL_GID}
+        MAIL_DOMAIN: ${MAIL_DOMAIN}
+        WEB_ENDPOINT: http://${MAIL_DOMAIN}/new_email
+    networks:
+      - web
+  nginx:
+    depends_on:
+      - mailadm
+    build:
+      context: nginx/.
+      dockerfile: Dockerfile
+    networks:
+      - web
+    ports:
+      - "80:80"
+
+volumes:
+  mailadm-db:
+
+networks:
+  # Network to isolate mailadm and nginx from email services
+  web:
+  mail:

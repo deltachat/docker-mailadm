@@ -24,6 +24,9 @@ If you don't have a valid domain, you can generate a snakeoil certificate:
 openssl req -new -x509 -days 365 -nodes -out certs/fullchain.pem -keyout certs/privkey.pem
 ```
 
+In this case make sure to change `WEB_ENDPOINT` to use `http://` scheme
+in the `mailadm` container.
+
 ## Running tests in a virtual machine
 
 If you don't want to install testing environment on your own host,
@@ -56,16 +59,15 @@ hostname.
 
 After starting the server, create a token for tests:
 ```
-$ docker-compose exec mailadm mailadm add-token foobar --maxuse 100000
-added token 'foobar'
+$ docker-compose exec mailadm mailadm add-token foobar --maxuse 100000 --token foobar
 token:foobar
   prefix = tmp.
   expiry = 1d
   maxuse = 100000
   usecount = 0
-  token  = 1d_wcww5jqsjau7kpe
-  http://testrun.localdomain/new_email?t=1d_wcww5jqsjau7kpe&n=foobar
-  DCACCOUNT:http://testrun.localdomain/new_email?t=1d_wcww5jqsjau7kpe&n=foobar
+  token  = foobar
+  http://testrun.localdomain/new_email?t=foobar&n=foobar
+  DCACCOUNT:http://testrun.localdomain/new_email?t=foobar&n=foobar
 ```
 
 This runs a `mailadm` command inside `mailadm` container, creating a token
@@ -73,7 +75,7 @@ This runs a `mailadm` command inside `mailadm` container, creating a token
 
 Now, run the tests:
 ```
-$ export DCC_NEW_TMP_EMAIL='http://testrun.localdomain/new_email?t=1d_wcww5jqsjau7kpe&n=foobar'
+$ export DCC_NEW_TMP_EMAIL='http://testrun.localdomain/new_email?t=foobar&n=foobar'
 $ cd ~/deltachat-core-rust/python
 $ python3 install_python_bindings.py
 $ pytest

@@ -29,7 +29,9 @@ RUN postconf -M submission/inet="submission inet n - n - - smtpd" \
   && postconf "virtual_transport=lmtp:dovecot:24" \
   && postconf "virtual_mailbox_base=/home/vmail" \
   && postconf "virtual_mailbox_maps=hash:/var/lib/mailadm/virtual_mailboxes" \
-  && postconf "maillog_file=/dev/stdout"
+  && postconf "maillog_file=/dev/stdout" \
+  && postconf "smtpd_tls_cert_file=/certs/fullchain.pem" \
+  && postconf "smtpd_tls_key_file=/certs/privkey.pem"
 
 EXPOSE 587
 

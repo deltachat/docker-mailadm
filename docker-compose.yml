@@ -7,6 +7,7 @@ services:
         MAIL_DOMAIN: ${MAIL_DOMAIN}
     volumes:
       - mailadm-db:/var/lib/mailadm/
+      - ./certs/:/certs/
     ports:
       - "587:587"
     networks:
@@ -14,6 +15,7 @@ services:
   dovecot:
     volumes:
       - mailadm-db:/var/lib/mailadm/
+      - ./certs/:/certs/
     build:
       context: dovecot/.
       args:
@@ -33,12 +35,14 @@ services:
         VMAIL_UID: ${VMAIL_UID}
         VMAIL_GID: ${VMAIL_GID}
         MAIL_DOMAIN: ${MAIL_DOMAIN}
-        WEB_ENDPOINT: http://${MAIL_DOMAIN}/new_email
+        WEB_ENDPOINT: https://${MAIL_DOMAIN}/new_email
     networks:
       - web
   nginx:
     depends_on:
       - mailadm
+    volumes:
+      - ./certs/:/certs/
     build:
       context: nginx/.
       dockerfile: Dockerfile
@@ -46,6 +50,7 @@ services:
       - web
     ports:
       - "80:80"
+      - "443:443"
 
 volumes:
   mailadm-db:

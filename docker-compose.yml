@@ -1,6 +1,7 @@
 version: "3"
 services:
   postfix:
+    restart: always
     build:
       context: postfix/.
       args:
@@ -13,6 +14,7 @@ services:
     networks:
       - mail
   dovecot:
+    restart: always
     volumes:
       - mailadm-db:/var/lib/mailadm/
       - ./certs/:/certs/
@@ -26,6 +28,7 @@ services:
     networks:
       - mail
   mailadm:
+    restart: always
     volumes:
       - mailadm-db:/var/lib/mailadm/
     build:
@@ -39,6 +42,7 @@ services:
     networks:
       - web
   nginx:
+    restart: always
     depends_on:
       - mailadm
     volumes:

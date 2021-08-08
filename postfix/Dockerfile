@@ -1,4 +1,4 @@
-FROM docker.io/alpine:3.12
+FROM docker.io/alpine:3.14
 
 ARG VMAIL_UID=1000
 ARG VMAIL_GID=1000

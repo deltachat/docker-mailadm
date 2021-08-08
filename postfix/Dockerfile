@@ -1,18 +1,14 @@
-#FROM docker.io/alpine:3.12
-#RUN apk add --no-cache postfix
-
-# Switched to debian because it generates TLS certificate by default
-FROM docker.io/debian:buster
+FROM docker.io/alpine:3.12
 
 ARG VMAIL_UID=1000
 ARG VMAIL_GID=1000
 
 # Create vmail user/group with desired UID/GID prior to installing Postfix.
 # Otherwise it will create its own "vmail" user.
-RUN addgroup --system --gid $VMAIL_GID vmail
-RUN adduser --system --uid $VMAIL_UID --gid $VMAIL_GID vmail
+RUN addgroup -S -g $VMAIL_GID vmail
+RUN adduser -S vmail -u $VMAIL_UID -G vmail
 
-RUN apt-get update && apt-get install postfix -y
+RUN apk add --no-cache postfix
 
 ARG MAIL_DOMAIN=example.org
 
@@ -35,7 +31,4 @@ RUN postconf -M submission/inet="submission inet n - n - - smtpd" \
 
 EXPOSE 587
 
-#CMD ["postfix", "start-fg"]
-# Postfix runs in chroot, so resolv.conf should be copied inside.
-# See https://serverfault.com/questions/1003885/postfix-in-docker-host-or-domain-name-not-found-dns-and-docker
-CMD cp /etc/resolv.conf /var/spool/postfix/etc/resolv.conf && postfix start-fg
+CMD ["postfix", "start-fg"]

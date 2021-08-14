@@ -10,16 +10,17 @@ RUN adduser -S vmail -u $VMAIL_UID -G vmail
 
 # Install Pillow (py3-pillow) from Alpine repository to avoid compiling it.
 # Postfix is required to run "postmap" command.
-RUN apk add --no-cache git bash python3 py3-pip py3-pillow postfix
+RUN apk add --no-cache git bash python3 py3-pip py3-pillow postfix python3-dev
 
 RUN adduser -S mailadm -G vmail --home /var/lib/mailadm
 
 WORKDIR /root
 RUN git clone --no-checkout https://github.com/deltachat/mailadm.git
 WORKDIR /root/mailadm
-RUN git checkout --quiet dfac74575d4301a3313e1f5d96865793c8a114e2
+RUN git checkout --quiet bot
 
-RUN python3 -m pip install -q .
+RUN python3 -m pip -q install wheel
+RUN python3 -m pip -q install .
 
 ENV MAILADM_DB=/var/lib/mailadm/mailadm.db
 ARG MAIL_DOMAIN=example.org

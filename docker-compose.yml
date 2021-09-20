@@ -18,6 +18,7 @@ services:
     volumes:
       - mailadm-db:/var/lib/mailadm/
       - ./certs/:/certs/
+      - ./dovecot/conf:/etc/dovecot
     build:
       context: dovecot/.
       args:
@@ -31,6 +32,7 @@ services:
     restart: always
     volumes:
       - mailadm-db:/var/lib/mailadm/
+      - ./dovecot/conf:/etc/dovecot
     build:
       context: mailadm/.
       dockerfile: Dockerfile
@@ -41,6 +43,8 @@ services:
         WEB_ENDPOINT: https://${MAIL_DOMAIN}/new_email
     networks:
       - web
+    ports:
+      - "8080:3691"
   nginx:
     restart: always
     depends_on:

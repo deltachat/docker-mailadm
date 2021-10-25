@@ -52,4 +52,4 @@ WORKDIR /var/lib/mailadm
 USER mailadm
 RUN . venv/bin/activate
 ENV MAILADM_DB=/var/lib/mailadm/mailadm.db
-CMD bash
+CMD systemctl daemon-reload && systemctl enable mailadm-web mailadm-prune && systemctl restart mailadm-web  mailadm-prune && bash

@@ -80,3 +80,24 @@ $ cd ~/deltachat-core-rust/python
 $ python3 install_python_bindings.py
 $ pytest
 ```
+
+## Configure mailadm
+
+During the build of the mailadm container, it reads some environment variables
+from `mailadm/.env`. Here a quick example of how you can fill them for a docker
+setup:
+
+```
+export MAIL_DOMAIN=testrun.localdomain
+
+export VMAIL_USER=vmail 
+export VMAIL_HOME=/home/vmail 
+
+export MAILADM_USER=mailadm 
+export MAILADM_HOME=/var/lib/mailadm
+export WEB_ENDPOINT=https://localhost:8080/new_email
+export LOCALHOST_WEB_PORT=3691
+
+export BOT_EMAIL=delta@example.com
+export BOT_PASSWORD=p4ssw0rd
+```

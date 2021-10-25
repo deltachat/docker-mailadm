@@ -1,0 +1,18 @@
+# mailadm configuration file for auth/user meta data access from dovecot
+
+driver = sqlite
+connect = /var/lib/mailadm/mailadm.db
+
+# addr is the the full routable e-mail address of a user
+
+password_query = \
+    SELECT addr AS user, (SELECT value FROM config WHERE name = 'mail_domain' LIMIT 1) AS domain, hash_pw AS password, \
+           homedir AS userdb_home, 'vmail' as userdb_uid, 'vmail' as userdb_gid \
+    FROM users WHERE addr = '%u'
+
+# this is needed for postfix/lda lookup
+user_query = \
+        SELECT homedir as home, 'vmail' AS uid, 'vmail' as gid \
+        FROM users WHERE addr = '%u'
+
+#  args = mail:INDEX=~/index quota_rule=*:storage=500M
